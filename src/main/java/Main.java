@@ -1,8 +1,9 @@
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-import org.omg.IOP.ExceptionDetailMessage;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class Main {
     public static void main(String args[]){
@@ -15,7 +16,10 @@ public class Main {
         }catch (Exception ex){
 
         }
-        System.out.print(doc.title());
+        System.out.println(doc.title());
         prices.forEach(p->System.out.println(p.text()));
+    }
+    private static BigDecimal TransformToInt(String text){
+        return new BigDecimal(text.substring(4,9));
     }
 }
