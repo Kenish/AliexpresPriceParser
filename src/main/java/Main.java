@@ -3,23 +3,25 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
+import java.util.List;
 
 public class Main {
     public static void main(String args[]){
-        Document doc = null;
-        Elements prices = null;
-        AliexpressStringComposer aliUrl = new AliexpressStringComposer(3,"smok micro one");
+        List<Elements> prices = null;
+        AliexpressApiService aliUrl = new AliexpressApiService();
         try {
-             doc = Jsoup.connect(aliUrl.toString()).get();
-             prices = doc.body().select("span[class=value]");
+           prices = aliUrl.getProducts("smok");
         }catch (Exception ex){
-
+        System.out.println("aa");
         }
-        System.out.println(doc.title());
-        prices.forEach(p->System.out.println(p.text()));
+        if (prices != null) {
+            double price =prices.stream().mapToInt(p->transformToInt(p.text())).average().getAsDouble();
+            String money = Double.toString(price/100);
+            System.out.println(money);
+        }
     }
-    private static BigDecimal TransformToInt(String text){
-        return new BigDecimal(text.substring(4,9));
+    private static int transformToInt(String text){
+        String cents = text.substring(4,6)+text.substring(7,9);
+       return Integer.parseInt(cents);
     }
 }
