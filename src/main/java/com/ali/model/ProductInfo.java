@@ -1,4 +1,4 @@
-package model;
+package com.ali.model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;

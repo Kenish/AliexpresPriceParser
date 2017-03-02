@@ -1,12 +1,10 @@
-import org.jsoup.select.Elements;
 import org.junit.Assert;
 import org.junit.Test;
-import service.AliexpressApiService;
+import com.ali.service.AliexpressApiService;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 public class AliexpressTests {
