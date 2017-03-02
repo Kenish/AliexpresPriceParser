@@ -3,6 +3,7 @@ package com.ali.model;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Calendar;
+import java.util.List;
 
 @Entity
 public class ProductInfo {
@@ -10,25 +11,20 @@ public class ProductInfo {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @Temporal(TemporalType.DATE)
-    private java.util.Calendar date;
+    private String name;
 
-    private BigDecimal averagePrice;
-
-    private BigDecimal mode;
-
-    private BigDecimal lowestPrice;
-
-    private BigDecimal highestPrice;
+    @OneToMany
+    private List<InfoData> infoDataList;
 
     protected ProductInfo() {}
 
-    public ProductInfo(Calendar date, BigDecimal averagePrice, BigDecimal mode, BigDecimal lowestPrice, BigDecimal highestPrice) {
-        this.date = date;
-        this.averagePrice = averagePrice;
-        this.mode = mode;
-        this.lowestPrice = lowestPrice;
-        this.highestPrice = highestPrice;
+    public ProductInfo(String name, List<InfoData> infoData) {
+        this.name = name;
+        this.infoDataList = infoData;
+    }
+
+    public ProductInfo(String name) {
+        this.name = name;
     }
 
     public long getId() {
@@ -39,43 +35,19 @@ public class ProductInfo {
         this.id = id;
     }
 
-    public Calendar getDate() {
-        return date;
+    public String getName() {
+        return name;
     }
 
-    public void setDate(Calendar date) {
-        this.date = date;
+    public void setName(String name) {
+        this.name = name;
     }
 
-    public BigDecimal getAveragePrice() {
-        return averagePrice;
+    public List<InfoData> getInfoData() {
+        return infoDataList;
     }
 
-    public void setAveragePrice(BigDecimal averagePrice) {
-        this.averagePrice = averagePrice;
-    }
-
-    public BigDecimal getMode() {
-        return mode;
-    }
-
-    public void setMode(BigDecimal mode) {
-        this.mode = mode;
-    }
-
-    public BigDecimal getLowestPrice() {
-        return lowestPrice;
-    }
-
-    public void setLowestPrice(BigDecimal lowestPrice) {
-        this.lowestPrice = lowestPrice;
-    }
-
-    public BigDecimal getHighestPrice() {
-        return highestPrice;
-    }
-
-    public void setHighestPrice(BigDecimal highestPrice) {
-        this.highestPrice = highestPrice;
+    public void addInfoData(InfoData info){
+        infoDataList.add(info);
     }
 }
