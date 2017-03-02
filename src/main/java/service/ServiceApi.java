@@ -9,8 +9,8 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface ServiceApi {
-    List<Elements> getProducts(String name) throws IOException;
-    List<Elements> getProductsMaxPage(String name, int page);
-    List<Elements> getProductsPriceRange(String name, BigDecimal min, BigDecimal max);
+    List<BigDecimal> getProductsPrices(String name) throws IOException, InterruptedException;
+    List<BigDecimal> getProductsMaxPagePrices(String name, int page) throws IOException, InterruptedException;
+    List<BigDecimal> getProductsPricesInRange(String name, BigDecimal min, BigDecimal max);
 
 }

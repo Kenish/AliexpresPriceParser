@@ -1,5 +1,6 @@
 package service;
 
+import org.dom4j.io.ElementModifier;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
@@ -11,9 +12,13 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class AliexpressApiService implements ServiceApi {
+    private static final int MAX_QUERIES = 50;
+    private static final int WAIT_TIME = 250; //ms
     public AliexpressApiService(){
 
     }
@@ -36,27 +41,52 @@ public class AliexpressApiService implements ServiceApi {
         return doc.body().select("span[class=value]");
     }
 
+
     @Override
-    public List<Elements> getProducts(String name) throws IOException {
-        List<Elements> prices = new ArrayList<>();
-        int i=1;
-        Elements pricepage = getPrices(startComposing().append(addName(name)).append(choosePage(i)));
-        prices.add(pricepage);
-/*        while (pricepage.size()>0) {
-            i++;
-            prices.add(pricepage);
-            pricepage= getPrices(startComposing().append(addName(name)).append(choosePage(i)));
-        }*/
+    public List<BigDecimal> getProductsPrices(String name) throws IOException, InterruptedException {
+      return getProductsMaxPagePrices(name,MAX_QUERIES);
+    }
+
+    @Override
+    public List<BigDecimal> getProductsMaxPagePrices(String name, int page) throws IOException, InterruptedException {
+       return converToBigDecimalPrices(getPricesList(name,page));
+    }
+
+    @Override
+    public List<BigDecimal> getProductsPricesInRange(String name, BigDecimal min, BigDecimal max) {
+        return null;
+    }
+
+    private List<String> getPricesList(String name,int page) throws InterruptedException, IOException {
+        List<String> prices = new ArrayList<>();
+        int counter=1;
+        Elements pricepage = getPrices(startComposing().append(addName(name)).append(choosePage(counter)));
+        prices.add(pricepage.text());
+        while (pricepage.size()>0) {
+            counter++;
+            prices.add(pricepage.text());
+            pricepage= getPrices(startComposing().append(addName(name)).append(choosePage(counter)));
+            if (counter==page){
+                return prices;
+            }
+            Thread.sleep(WAIT_TIME);
+        }
         return prices;
     }
+    public List<BigDecimal> converToBigDecimalPrices(List<String> prices){
+        Pattern p =Pattern.compile(("\\d+"));
+        List<String> matched = new ArrayList<>();
+        List<BigDecimal> decimalPrices = new ArrayList<>();
+        for(String price:prices){
+            Matcher m = p.matcher(price);
+            while (m.find()){
+                matched.add(m.group());
+            }
+        }
+        for (int i=0;i<matched.size()-1;i+=2){
+            decimalPrices.add(new BigDecimal(matched.get(i)+"."+matched.get(i+1)));
+        }
+        return decimalPrices;
 
-    @Override
-    public List<Elements> getProductsMaxPage(String name, int page) {
-        return null;
-    }
-
-    @Override
-    public List<Elements> getProductsPriceRange(String name, BigDecimal min, BigDecimal max) {
-        return null;
     }
 }
