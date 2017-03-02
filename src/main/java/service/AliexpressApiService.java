@@ -1,12 +1,18 @@
+package service;
+
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.springframework.context.annotation.Bean;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
 public class AliexpressApiService implements ServiceApi {
     public AliexpressApiService(){
 
@@ -36,7 +42,7 @@ public class AliexpressApiService implements ServiceApi {
         int i=1;
         Elements pricepage = getPrices(startComposing().append(addName(name)).append(choosePage(i)));
         prices.add(pricepage);
-    /*    while (pricepage.size()>0) {
+/*        while (pricepage.size()>0) {
             i++;
             prices.add(pricepage);
             pricepage= getPrices(startComposing().append(addName(name)).append(choosePage(i)));
