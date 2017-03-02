@@ -71,17 +71,14 @@ public class AliexpressApiService implements ServiceApi {
         return prices;
     }
     public List<BigDecimal> converToBigDecimalPrices(List<String> prices){
-        Pattern p =Pattern.compile(("\\d+"));
+        Pattern p =Pattern.compile(("(\\d+).\\d{2}"));
         List<String> matched = new ArrayList<>();
         List<BigDecimal> decimalPrices = new ArrayList<>();
         for(String price:prices){
             Matcher m = p.matcher(price);
             while (m.find()){
-                matched.add(m.group());
+                decimalPrices.add(new BigDecimal(m.group()));
             }
-        }
-        for (int i=0;i<matched.size()-1;i+=2){
-            decimalPrices.add(new BigDecimal(matched.get(i)+"."+matched.get(i+1)));
         }
         return decimalPrices;
 
