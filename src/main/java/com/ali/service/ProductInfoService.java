@@ -6,6 +6,7 @@ import com.ali.model.InfoData;
 import com.ali.model.ProductInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -13,7 +14,6 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Calendar;
 import java.util.List;
-import java.util.logging.Logger;
 
 @Service
 public class ProductInfoService {
@@ -28,23 +28,25 @@ private final InfoDataRepository infoDataRepository;
         this.infoDataRepository = infoDataRepository;
     }
 
-    public HttpStatus productInfoTask(String name) {
+
+    public void productInfoTask(String name) {
         new Thread(() -> {
             List<BigDecimal> prices;
             try {
                 prices = aliexpressApiService.getProductsPrices(name);
             } catch (IOException | InterruptedException e) {
-                throw new ProductCannotBeObtainedExcepiton();
+                throw new ProductCannotBeObtainedException();
             }
             ProductInfo productInfo = productInfoRepository.findByName(name);
             System.out.print(productInfo.getId());
             InfoData data = computePrices(prices);
-
+            infoDataRepository.save(data);
             productInfo.addInfoData(data);
+            productInfoRepository.save(productInfo);
 
         }).run();
-        return HttpStatus.OK;
     }
+
 
     InfoData computePrices(List<BigDecimal> prices){
         BigDecimal min = prices.get(0);
