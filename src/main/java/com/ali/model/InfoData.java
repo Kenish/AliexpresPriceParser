@@ -1,18 +1,13 @@
 package com.ali.model;
 
-import org.springframework.data.annotation.Id;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
 import java.math.BigDecimal;
 import java.util.Calendar;
 
 @Entity
 public class InfoData {
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
     @Temporal(TemporalType.DATE)
     private java.util.Calendar date;
@@ -66,6 +61,14 @@ public class InfoData {
 
     public BigDecimal getMax() {
         return max;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public void setMax(BigDecimal max) {

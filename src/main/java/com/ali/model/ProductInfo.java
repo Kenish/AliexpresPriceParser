@@ -2,6 +2,7 @@ package com.ali.model;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
@@ -13,8 +14,9 @@ public class ProductInfo {
 
     private String name;
 
-    @OneToMany
-    private List<InfoData> infoDataList;
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "PRODUCT_INFO_ID")
+    private List<InfoData> infoDataList = new ArrayList<>();
 
     protected ProductInfo() {}
 

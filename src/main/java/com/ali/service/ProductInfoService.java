@@ -5,11 +5,15 @@ import com.ali.Repository.ProductInfoRepository;
 import com.ali.model.InfoData;
 import com.ali.model.ProductInfo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Calendar;
 import java.util.List;
+import java.util.logging.Logger;
 
 @Service
 public class ProductInfoService {
@@ -24,25 +28,29 @@ private final InfoDataRepository infoDataRepository;
         this.infoDataRepository = infoDataRepository;
     }
 
-    ProductInfo AddProductInfo(String name, List<BigDecimal> prices){
-        ProductInfo productInfo =productInfoRepository.findByName(name);
-        if (productInfo.equals(null)){
-            productInfoRepository.save(new ProductInfo(name));
-            productInfo=productInfoRepository.findByName(name);
-    }
-        InfoData data = computePrices(prices);
-        infoDataRepository.save(data);
-        productInfo.addInfoData(data);
-        return productInfo;
+    public HttpStatus productInfoTask(String name) {
+        new Thread(() -> {
+            List<BigDecimal> prices;
+            try {
+                prices = aliexpressApiService.getProductsPrices(name);
+            } catch (IOException | InterruptedException e) {
+                throw new ProductCannotBeObtainedExcepiton();
+            }
+            ProductInfo productInfo = productInfoRepository.findByName(name);
+            System.out.print(productInfo.getId());
+            InfoData data = computePrices(prices);
+
+            productInfo.addInfoData(data);
+
+        }).run();
+        return HttpStatus.OK;
     }
 
     InfoData computePrices(List<BigDecimal> prices){
-        InfoData dto = new InfoData();
         BigDecimal min = prices.get(0);
         BigDecimal max = prices.get(0);
         BigDecimal sum = new BigDecimal(0);
-        BigDecimal avg = new BigDecimal("0");
-        BigDecimal mode = new BigDecimal("0");
+        new BigDecimal("0");
         for (BigDecimal price:prices) {
 
         if (price.compareTo(min)==-1){
@@ -54,8 +62,8 @@ private final InfoDataRepository infoDataRepository;
         sum = sum.add(price);
 
         }
-        avg = sum.divide(new BigDecimal(prices.size()), RoundingMode.DOWN);
-        return new InfoData(avg,min,max);
+        BigDecimal avg = sum.divide(new BigDecimal(prices.size()), RoundingMode.DOWN);
+        return new InfoData(Calendar.getInstance(), avg, min, max);
     }
 
 }
