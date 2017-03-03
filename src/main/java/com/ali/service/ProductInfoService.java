@@ -34,6 +34,9 @@ private final InfoDataRepository infoDataRepository;
             List<BigDecimal> prices;
             try {
                 prices = aliexpressApiService.getProductsPrices(name);
+                if (prices.size() == 0) {
+                    prices.add(new BigDecimal("0"));
+                }
             } catch (IOException | InterruptedException e) {
                 throw new ProductCannotBeObtainedException();
             }
@@ -48,7 +51,7 @@ private final InfoDataRepository infoDataRepository;
     }
 
 
-    InfoData computePrices(List<BigDecimal> prices){
+    private InfoData computePrices(List<BigDecimal> prices) {
         BigDecimal min = prices.get(0);
         BigDecimal max = prices.get(0);
         BigDecimal sum = new BigDecimal(0);
