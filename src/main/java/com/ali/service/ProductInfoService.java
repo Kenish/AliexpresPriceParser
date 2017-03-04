@@ -31,18 +31,10 @@ private final InfoDataRepository infoDataRepository;
 
     public void productInfoTask(String name) {
         new Thread(() -> {
-            List<BigDecimal> prices;
-            try {
-                prices = aliexpressApiService.getProductsPrices(name);
-                if (prices.size() == 0) {
-                    prices.add(new BigDecimal("0"));
-                }
-            } catch (IOException | InterruptedException e) {
-                throw new ProductCannotBeObtainedException();
-            }
+            List<BigDecimal> prices = getPricesSafely(name);
+
             ProductInfo productInfo = productInfoRepository.findByName(name);
-            System.out.print(productInfo.getId());
-            InfoData data = computePrices(prices);
+            InfoData data = InfoData.computePrices(prices);
             infoDataRepository.save(data);
             productInfo.addInfoData(data);
             productInfoRepository.save(productInfo);
@@ -50,25 +42,20 @@ private final InfoDataRepository infoDataRepository;
         }).run();
     }
 
+    private List<BigDecimal> getPricesSafely(String name) {
+        List<BigDecimal> prices;
+        try {
+            prices = aliexpressApiService.getProductsPrices(name);
+            if (prices.size() == 0) {
+                prices.add(new BigDecimal("0"));
 
-    private InfoData computePrices(List<BigDecimal> prices) {
-        BigDecimal min = prices.get(0);
-        BigDecimal max = prices.get(0);
-        BigDecimal sum = new BigDecimal(0);
-        new BigDecimal("0");
-        for (BigDecimal price:prices) {
-
-        if (price.compareTo(min)==-1){
-            min = price;
+            }
+        } catch (IOException | InterruptedException e) {
+            throw new ProductCannotBeObtainedException();
         }
-        if (price.compareTo(max)==1){
-            max=price;
-        }
-        sum = sum.add(price);
-
-        }
-        BigDecimal avg = sum.divide(new BigDecimal(prices.size()), RoundingMode.DOWN);
-        return new InfoData(Calendar.getInstance(), avg, min, max);
+        return prices;
     }
+
+
 
 }

@@ -6,14 +6,12 @@ import com.ali.model.ProductInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
 public class EventExecutorService {
-    ProductInfoRepository productInfoRepository;
-    ProductInfoService productInfoService;
+    private final ProductInfoRepository productInfoRepository;
+    private final ProductInfoService productInfoService;
 
     @Autowired
     public EventExecutorService(ProductInfoRepository productInfoRepository, ProductInfoService productInfoService) {

@@ -1,8 +1,12 @@
 package com.ali.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Calendar;
+import java.util.List;
 
 @Entity
 public class InfoData {
@@ -21,14 +25,8 @@ public class InfoData {
     public InfoData() {
     }
 
-    public InfoData(Calendar date, BigDecimal average, BigDecimal min, BigDecimal max) {
+    private InfoData(Calendar date, BigDecimal average, BigDecimal min, BigDecimal max) {
         this.date = date;
-        this.average = average;
-        this.min = min;
-        this.max = max;
-    }
-
-    public InfoData(BigDecimal average, BigDecimal min, BigDecimal max) {
         this.average = average;
         this.min = min;
         this.max = max;
@@ -63,6 +61,7 @@ public class InfoData {
         return max;
     }
 
+    @JsonIgnore
     public long getId() {
         return id;
     }
@@ -73,5 +72,25 @@ public class InfoData {
 
     public void setMax(BigDecimal max) {
         this.max = max;
+    }
+
+    public static InfoData computePrices(List<BigDecimal> prices) {
+        BigDecimal min = prices.get(0);
+        BigDecimal max = prices.get(0);
+        BigDecimal sum = new BigDecimal(0);
+        new BigDecimal("0");
+        for (BigDecimal price : prices) {
+
+            if (price.compareTo(min) == -1) {
+                min = price;
+            }
+            if (price.compareTo(max) == 1) {
+                max = price;
+            }
+            sum = sum.add(price);
+
+        }
+        BigDecimal avg = sum.divide(new BigDecimal(prices.size()), RoundingMode.CEILING);
+        return new InfoData(Calendar.getInstance(), avg, min, max);
     }
 }

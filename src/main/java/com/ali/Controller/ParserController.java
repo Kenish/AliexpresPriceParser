@@ -3,13 +3,9 @@ package com.ali.Controller;
 import com.ali.Repository.ProductInfoRepository;
 import com.ali.model.ProductInfo;
 import com.ali.service.EventExecutorService;
-import com.ali.service.ProductInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -37,6 +33,11 @@ public class ParserController {
         }
         eventExecutorService.addTask(name);
         return HttpStatus.ACCEPTED;
+    }
+
+    @RequestMapping(value = "api/aliexpress/{id}")
+    ProductInfo getProductInfo(@PathVariable Long id) {
+        return repository.findOne(id);
     }
 
 }

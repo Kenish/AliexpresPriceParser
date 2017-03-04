@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 @Service
 public class AliexpressApiService implements ServiceApi {
-    private static final int MAX_QUERIES = 5;
+    private static final int MAX_QUERIES = 50;
     private static final int WAIT_TIME = 250; //ms
     public AliexpressApiService(){
 
@@ -70,7 +70,8 @@ public class AliexpressApiService implements ServiceApi {
         }
         return prices;
     }
-    public List<BigDecimal> converToBigDecimalPrices(List<String> prices){
+
+    private List<BigDecimal> converToBigDecimalPrices(List<String> prices) {
         Pattern p =Pattern.compile(("(\\d+).\\d{2}"));
         List<String> matched = new ArrayList<>();
         List<BigDecimal> decimalPrices = new ArrayList<>();
