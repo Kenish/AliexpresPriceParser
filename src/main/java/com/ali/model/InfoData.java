@@ -25,7 +25,7 @@ public class InfoData {
     public InfoData() {
     }
 
-    private InfoData(Calendar date, BigDecimal average, BigDecimal min, BigDecimal max) {
+    public InfoData(Calendar date, BigDecimal average, BigDecimal min, BigDecimal max) {
         this.date = date;
         this.average = average;
         this.min = min;

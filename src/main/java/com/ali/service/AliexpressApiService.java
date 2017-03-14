@@ -73,7 +73,6 @@ public class AliexpressApiService implements ServiceApi {
 
     private List<BigDecimal> converToBigDecimalPrices(List<String> prices) {
         Pattern p =Pattern.compile(("(\\d+).\\d{2}"));
-        List<String> matched = new ArrayList<>();
         List<BigDecimal> decimalPrices = new ArrayList<>();
         for(String price:prices){
             price = price.replace(",", "");

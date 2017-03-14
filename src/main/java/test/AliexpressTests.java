@@ -1,3 +1,5 @@
+package test;
+
 import com.ali.Repository.InfoDataRepository;
 import com.ali.Repository.ProductInfoRepository;
 import com.ali.model.InfoData;
@@ -8,14 +10,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import com.ali.service.AliexpressApiService;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class AliexpressTests {
@@ -70,5 +70,6 @@ public class AliexpressTests {
         Assert.assertEquals(data.getMax(), new BigDecimal("3.00"));
         Assert.assertEquals(data.getMin(), new BigDecimal("1.00"));
     }
+
 
 }

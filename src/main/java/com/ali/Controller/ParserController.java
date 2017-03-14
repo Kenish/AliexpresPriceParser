@@ -14,7 +14,6 @@ public class ParserController {
 
     private final ProductInfoRepository repository;
     private final EventExecutorService eventExecutorService;
-
     @Autowired
     public ParserController(ProductInfoRepository repository, EventExecutorService eventExecutorService) {
         this.repository = repository;
@@ -38,6 +37,11 @@ public class ParserController {
     @RequestMapping(value = "api/aliexpress/{id}")
     ProductInfo getProductInfo(@PathVariable Long id) {
         return repository.findOne(id);
+    }
+
+    @RequestMapping(value = "api/aliexpress", method = RequestMethod.PUT)
+    public void reProcess() {
+        eventExecutorService.runTasks();
     }
 
 }
