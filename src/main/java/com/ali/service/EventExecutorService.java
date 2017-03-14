@@ -23,7 +23,7 @@ public class EventExecutorService {
         productInfoRepository.save(new ProductInfo(productName));
     }
 
-    @Scheduled(fixedDelay = 50000)
+    @Scheduled(initialDelay = 50000, fixedDelay = 86400000)
     public void runTasks() {
         List<ProductInfo> productInfos = productInfoRepository.findAll();
         if (productInfos.size() > 0) {

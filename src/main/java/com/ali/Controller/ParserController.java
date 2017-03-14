@@ -39,6 +39,11 @@ public class ParserController {
         return repository.findOne(id);
     }
 
+    @RequestMapping(value = "api/aliexpress/{id}", method = RequestMethod.DELETE)
+    HttpStatus removeProduct(@PathVariable Long id) {
+        repository.delete(id);
+        return HttpStatus.GONE;
+    }
     @RequestMapping(value = "api/aliexpress", method = RequestMethod.PUT)
     public void reProcess() {
         eventExecutorService.runTasks();
